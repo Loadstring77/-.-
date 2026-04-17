@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سكربتات</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: #0f0f23;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(120, 80, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 80, 120, 0.1) 0%, transparent 50%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #fff;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,0.15), transparent),
+                radial-gradient(2px 2px at 60px 70px, rgba(255,255,255,0.1), transparent),
+                radial-gradient(1px 1px at 50px 160px, rgba(255,255,255,0.15), transparent);
+            background-size: 200px 200px;
+            pointer-events: none;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            font-size: 2em;
+            background: linear-gradient(135deg, #a78bfa 0%, #f472b6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .header p {
+            color: #9ca3af;
+            font-size: 0.9em;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 25px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #e5e7eb;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+        
+        input, textarea {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px;
+            color: #fff;
+            font-size: 16px;
+            font-family: 'Courier New', monospace;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+        
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #a78bfa;
+            background: rgba(0, 0, 0, 0.4);
+        }
+        
+        textarea {
+            height: 250px;
+            resize: vertical;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            color: #9ca3af;
+            font-size: 0.9em;
+            margin: -10px 0 20px 0;
+        }
+        
+        .btn {
+            width: 100%;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 12px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .btn-purple {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+        }
+        
+        .btn-pink {
+            background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+            color: white;
+        }
+        
+        .btn-orange {
+            background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+            color: white;
+        }
+        
+        .icon {
+            width: 20px;
+            height: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <h1><svg class="icon" fill="currentColor" viewBox="0 0 20 20"><path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a1 1 0 011-1h14a1 1 0 110 2H3a1 1 0 01-1-1z"/></svg>سكربتات</h1>
+        </div>
+        <p>شارك السكربتات بسهولة</p>
+    </div>
+    
+    <div class="container">
+        <label>📄 العنوان</label>
+        <input type="text" id="titleInput" placeholder="اكتب عنوان السكربت هنا...">
+        
+        <label>📝 السكربت</label>
+        <textarea id="scriptInput" placeholder="الصق أو اكتب السكربت هنا..."></textarea>
+        
+        <div class="stats">
+            <span id="lines">0 سطر</span>
+            <span id="chars">0 حرف</span>
+        </div>
+        
+        <button class="btn btn-purple" onclick="copyScript()">
+            <svg class="icon" fill="currentColor" viewBox="0 0 20 20"><path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"/><path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z"/></svg>
+            نسخ السكربت
+        </button>
+        
+        <button class="btn btn-pink" onclick="downloadScript()">
+            <svg class="icon" fill="currentColor" viewBox="0 0 20 20"><path d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"/></svg>
+            تنزيل السكربت
+        </button>
+        
+        <button class="btn btn-orange" onclick="copyLink()">
+            <svg class="icon" fill="currentColor" viewBox="0 0 20 20"><path d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414l-1.5 1.5a2 2 0 11-2.828l3-3z"/></svg>
+            نسخ الرابط
+        </button>
+    </div>
+    
+    <script>
+        const scriptInput = document.getElementById('scriptInput');
+        const titleInput = document.getElementById('titleInput');
+        
+        scriptInput.addEventListener('input', updateStats);
+        
+        function updateStats() {
+            const text = scriptInput.value;
+            const lines = text ? text.split('\n').length : 0;
+            const chars = text.length;
+            document.getElementById('lines').textContent = lines + ' سطر';
+            document.getElementById('chars').textContent = chars + ' حرف';
+        }
+        
+        function copyScript() {
+            if (!scriptInput.value.trim()) return alert('اكتب السكربت أول!');
+            navigator.clipboard.writeText(scriptInput.value);
+            alert('تم نسخ السكربت ✅');
+        }
+        
+        function downloadScript() {
+            if (!scriptInput.value.trim()) return alert('اكتب السكربت أول!');
+            const title = titleInput.value || 'script';
+            const blob = new Blob([scriptInput.value], {type: 'text/plain'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = title + '.txt';
+            a.click();
+        }
+        
+        function copyLink() {
+            if (!scriptInput.value.trim()) return alert('اكتب السكربت أول!');
+            const data = {t: titleInput.value, s: scriptInput.value};
+            const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+            const url = window.location.origin + window.location.pathname + '?data=' + encoded;
+            navigator.clipboard.writeText(url);
+            alert('تم نسخ الرابط ✅');
+        }
+        
+        window.onload = function() {
+            const params = new URLSearchParams(window.location.search);
+            const data = params.get('data');
+            if (data) {
+                try {
+                    const decoded = JSON.parse(decodeURIComponent(escape(atob(data))));
+                    titleInput.value = decoded.t || '';
+                    scriptInput.value = decoded.s || '';
+                    updateStats();
+                    document.querySelectorAll('button').forEach(btn => btn.style.display = 'none');
+                    document.querySelector('.header p').textContent = 'سكربت مشارك معك';
+                } catch(e) {}
+            }
+        }
+    </script>
+</body>
+</html>
