@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مشاركة السكربتات</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap');
+        * {margin:0;padding:0;box-sizing:border-box}
+        body {font-family:'Tajawal',sans-serif;background:#000;color:#fff;min-height:100vh;overflow-x:hidden;position:relative}
+        .stars {position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
+        .star {position:absolute;background:#fff;border-radius:50%;animation:twinkle 3s infinite}
+        @keyframes twinkle {0%,100%{opacity:0.2}50%{opacity:1}}
+        .container {position:relative;z-index:1;max-width:800px;margin:0 auto;padding:40px 20px}
+        h1 {font-size:2.5rem;font-weight:900;text-align:center;margin-bottom:40px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .card {background:rgba(20,20,30,0.8);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:30px;margin-bottom:25px;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
+        label {display:block;font-weight:700;margin-bottom:10px;font-size:1.1rem;color:#a78bfa}
+        input,textarea {width:100%;background:rgba(0,0,0,0.4);border:2px solid rgba(167,139,250,0.3);border-radius:12px;padding:15px;color:#fff;font-family:'Tajawal',sans-serif;font-size:1rem;transition:all 0.3s}
+        input:focus,textarea:focus {outline:none;border-color:#a78bfa;box-shadow:0 0 20px rgba(167,139,250,0.3)}
+        textarea {resize:vertical;min-height:150px;font-family:monospace;direction:ltr;text-align:left}
+        button {width:100%;padding:15px;border:none;border-radius:12px;font-family:'Tajawal',sans-serif;font-size:1.1rem;font-weight:700;cursor:pointer;transition:all 0.3s;margin-top:15px}
+        .btn-primary {background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff}
+        .btn-primary:hover {transform:translateY(-2px);box-shadow:0 10px 30px rgba(102,126,234,0.4)}
+        .btn-secondary {background:rgba(167,139,250,0.2);color:#a78bfa;border:2px solid #a78bfa}
+        .btn-secondary:hover {background:rgba(167,139,250,0.3)}
+        .output {display:none;animation:fadeIn 0.5s}
+        .output.show {display:block}
+        @keyframes fadeIn {from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+        .link-box {background:rgba(0,0,0,0.6);border:2px solid #a78bfa;border-radius:12px;padding:15px;word-break:break-all;margin:15px 0;font-family:monospace;direction:ltr;text-align:left;color:#a78bfa}
+        .toast {position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;padding:15px 30px;border-radius:50px;font-weight:700;box-shadow:0 10px 40px rgba(0,0,0,0.5);opacity:0;transition:all 0.3s;z-index:1000}
+        .toast.show {opacity:1;transform:translateX(-50%) translateY(0)}
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    <div class="container">
+        <h1>✨ مشاركة السكربتات ✨</h1>
+        <div class="card">
+            <label>📝 عنوان السكربت</label>
+            <input type="text" id="title" placeholder="مثال: سكربت ماب ستيديو لايت">
+        </div>
+        <div class="card">
+            <label>💻 كود السكربت</label>
+            <textarea id="script" placeholder="الصق السكربت هنا..."></textarea>
+            <button class="btn-primary" onclick="generateLink()">🔗 إنشاء رابط المشاركة</button>
+        </div>
+        <div class="card output" id="output">
+            <label>✅ رابط المشاركة جاهز</label>
+            <div class="link-box" id="linkBox"></div>
+            <button class="btn-secondary" onclick="copyLink()">📋 نسخ الرابط</button>
+            <button class="btn-primary" onclick="resetForm()">➕ سكربت جديد</button>
+        </div>
+    </div>
+    <div class="toast" id="toast"></div>
+    <script>
+        const starsContainer = document.getElementById('stars');
+        for(let i=0;i<100;i++){
+            const star=document.createElement('div');
+            star.className='star';
+            star.style.width=Math.random()*3+'px';
+            star.style.height=star.style.width;
+            star.style.left=Math.random()*100+'%';
+            star.style.top=Math.random()*100+'%';
+            star.style.animationDelay=Math.random()*3+'s';
+            starsContainer.appendChild(star);
+        }
+        window.onload=function(){
+            const urlParams=new URLSearchParams(window.location.search);
+            const title=urlParams.get('title');
+            const script=urlParams.get('script');
+            if(title||script){
+                document.getElementById('title').value=decodeURIComponent(title||'');
+                document.getElementById('script').value=decodeURIComponent(script||'');
+                showToast('✅ تم تحميل السكربت من الرابط');
+            }
+        };
+        let currentLink='';
+        function generateLink(){
+            const title=document.getElementById('title').value.trim();
+            const script=document.getElementById('script').value.trim();
+            if(!title||!script){
+                showToast('⚠️ املأ العنوان والسكربت أول');
+                return;
+            }
+            const baseUrl=window.location.origin+window.location.pathname;
+            const params=new URLSearchParams();
+            params.set('title',encodeURIComponent(title));
+            params.set('script',encodeURIComponent(script));
+            currentLink=baseUrl+'?'+params.toString();
+            document.getElementById('linkBox').textContent=currentLink;
+            document.getElementById('output').classList.add('show');
+            showToast('🎉 تم إنشاء الرابط بنجاح');
+        }
+        function copyLink(){
+            navigator.clipboard.writeText(currentLink).then(()=>{
+                showToast('📋 تم نسخ الرابط');
+            });
+        }
+        function resetForm(){
+            document.getElementById('title').value='';
+            document.getElementById('script').value='';
+            document.getElementById('output').classList.remove('show');
+            window.history.replaceState({},document.title,window.location.pathname);
+            showToast('🔄 جاهز لسكربت جديد');
+        }
+        function showToast(msg){
+            const toast=document.getElementById('toast');
+            toast.textContent=msg;
+            toast.classList.add('show');
+            setTimeout(()=>toast.classList.remove('show'),3000);
+        }
+    </script>
+</body>
+</html>
